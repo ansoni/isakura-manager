@@ -1,6 +1,6 @@
 package main
 
-//go:generate swagger generate server -A IsakuraManager -f ./swagger.yaml
+//go:generate swagger generate server -A IsakuraManager -f ./swagger.yaml --exclude-main
 
 import (
   "fmt"
@@ -17,7 +17,12 @@ import (
   "os"
   "sync"
   "regexp"
-  "github.com/ansoni/isakura-manager/cmd/isakura-manager-server"
+  "log"
+
+  "github.com/ansoni/isakura-manager/restapi"
+  "github.com/ansoni/isakura-manager/restapi/operations"
+  loads "github.com/go-openapi/loads"
+  flags "github.com/jessevdk/go-flags"
 )
 
 var saveMutex sync.Mutex
@@ -372,6 +377,43 @@ func (isakura *isakura) serve(downloads chan Download) {
   for {
     time.Sleep(time.Second * 30)
   }
+
+	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	api := operations.NewIsakuraManagerAPI(swaggerSpec)
+	server := restapi.NewServer(api)
+	defer server.Shutdown()
+
+	parser := flags.NewParser(server, flags.Default)
+	parser.ShortDescription = "isakura-manager"
+	parser.LongDescription = "Isakura-manager"
+
+	server.ConfigureFlags()
+	for _, optsGroup := range api.CommandLineOptionsGroups {
+		_, err := parser.AddGroup(optsGroup.ShortDescription, optsGroup.LongDescription, optsGroup.Options)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	if _, err := parser.Parse(); err != nil {
+		code := 1
+		if fe, ok := err.(*flags.Error); ok {
+			if fe.Type == flags.ErrHelp {
+				code = 0
+			}
+		}
+		os.Exit(code)
+	}
+
+	server.ConfigureAPI()
+
+	if err := server.Serve(); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func (isakura *isakura) load() {
