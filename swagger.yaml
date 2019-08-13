@@ -1,0 +1,62 @@
+swagger: "2.0"
+info:
+  description: "Isakura-manager"
+  version: "1.0.0"
+  title: "isakura-manager"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+schemes:
+- "https"
+- "http"
+paths:
+  /channel:
+    get:
+      summary: "get all channels"
+      description: ""
+      operationId: "getChannels"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "search"
+        description: "Search Param to look for in programming"
+        type: string
+      responses:
+        200:
+          description: woot!
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Channel"
+definitions:
+  Channel:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      channelName:
+        type: "string"
+      guide:
+        type: "array"
+        items:
+          $ref: "#/definitions/Guide"
+  Guide:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      airdate:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: "Category"
