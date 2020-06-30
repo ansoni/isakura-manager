@@ -39,7 +39,7 @@ func (o *GetChannelsURL) SetBasePath(bp string) {
 func (o *GetChannelsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/channel"
+	var _path = "/channels/"
 
 	_basePath := o._basePath
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)

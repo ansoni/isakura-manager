@@ -1,0 +1,32 @@
+.md-dialog[data-v-35b975] {
+  max-width: 768px;
+}
+.listings {
+  max-height: 400px;
+  overflow: auto;
+}
+.matches {
+  height: 400px;
+  overflow: auto;
+}
+.app {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.md-app {
+    border: 1px solid rgba(#000, .12);
+  }
+
+.app-top {
+  margin: 0 0 3em;
+}
+
+.app-calendar {
+ margin: 0 auto;
+ width: auto;
+ z-index: 1000;
+}
+.schedule {
+  width: 600px;
+}

@@ -29,7 +29,7 @@ func NewGetChannels(ctx *middleware.Context, handler GetChannelsHandler) *GetCha
 	return &GetChannels{Context: ctx, Handler: handler}
 }
 
-/*GetChannels swagger:route GET /channel getChannels
+/*GetChannels swagger:route GET /channels/ getChannels
 
 get all channels
 

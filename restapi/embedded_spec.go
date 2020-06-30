@@ -37,13 +37,24 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
-    "/channel": {
+    "/": {
+      "get": {
+        "summary": "app redirect",
+        "operationId": "getRootRedirect",
+        "responses": {
+          "301": {
+            "description": "woot!"
+          }
+        }
+      }
+    },
+    "/channels/": {
       "get": {
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "application/json"
+          "application/json; charset=utf-8"
         ],
         "summary": "get all channels",
         "operationId": "getChannels",
@@ -67,10 +78,274 @@ func init() {
           }
         }
       }
+    },
+    "/channels/guide": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get channel guide",
+        "operationId": "getChannelsGuide",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Search Param to filter on",
+            "name": "search",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ChannelGuide"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channel}/content/{content}/preview": {
+      "get": {
+        "produces": [
+          "video/x-flv"
+        ],
+        "summary": "get content info",
+        "operationId": "getContentPreview",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "content",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "channel",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/channels/{channel}/guide": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get channel guide",
+        "operationId": "getChannelGuide",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "channel",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Search Param to filter on",
+            "name": "search",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "$ref": "#/definitions/ChannelGuide"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/content": {
+      "get": {
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get existing content we have downloaded",
+        "operationId": "getContent",
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Content"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/folders": {
+      "get": {
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get existing content folders",
+        "operationId": "getContentFolders",
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/{content_name}": {
+      "delete": {
+        "summary": "delete a piece of content from library",
+        "operationId": "deleteContent",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "content_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "broke"
+          }
+        }
+      }
+    },
+    "/schedules": {
+      "get": {
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get our recording schedules",
+        "operationId": "getSchedules",
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Schedule"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get our recording schedules",
+        "operationId": "createSchedule",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Schedule"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          }
+        }
+      }
+    },
+    "/schedules/{schedule_name}": {
+      "delete": {
+        "summary": "delete a recording schedule",
+        "operationId": "deleteSchedule",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "schedule_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "broke"
+          }
+        }
+      }
+    },
+    "/ui/{resource}": {
+      "get": {
+        "summary": "app redirect",
+        "operationId": "getUiContent",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "resource",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          }
+        }
+      }
     }
   },
   "definitions": {
     "Channel": {
+      "type": "object",
+      "properties": {
+        "broadcastType": {
+          "type": "string"
+        },
+        "channelName": {
+          "type": "string"
+        }
+      }
+    },
+    "ChannelGuide": {
       "type": "object",
       "properties": {
         "channelName": {
@@ -88,6 +363,21 @@ func init() {
         }
       }
     },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "download_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "local_path": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "Guide": {
       "type": "object",
       "properties": {
@@ -102,9 +392,49 @@ func init() {
         "name": {
           "type": "string"
         }
-      },
-      "xml": {
-        "name": "Category"
+      }
+    },
+    "Schedule": {
+      "type": "object",
+      "properties": {
+        "appendDate": {
+          "type": "boolean"
+        },
+        "appendTime": {
+          "type": "boolean"
+        },
+        "filter": {
+          "type": "string"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "prependDate": {
+          "type": "boolean"
+        },
+        "prependTime": {
+          "type": "boolean"
+        },
+        "searches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "replace": {
+                "type": "string"
+              },
+              "search": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "watch": {
+          "type": "boolean"
+        }
       }
     }
   }
@@ -129,13 +459,24 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
-    "/channel": {
+    "/": {
+      "get": {
+        "summary": "app redirect",
+        "operationId": "getRootRedirect",
+        "responses": {
+          "301": {
+            "description": "woot!"
+          }
+        }
+      }
+    },
+    "/channels/": {
       "get": {
         "consumes": [
           "application/json"
         ],
         "produces": [
-          "application/json"
+          "application/json; charset=utf-8"
         ],
         "summary": "get all channels",
         "operationId": "getChannels",
@@ -159,10 +500,274 @@ func init() {
           }
         }
       }
+    },
+    "/channels/guide": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get channel guide",
+        "operationId": "getChannelsGuide",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Search Param to filter on",
+            "name": "search",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ChannelGuide"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channel}/content/{content}/preview": {
+      "get": {
+        "produces": [
+          "video/x-flv"
+        ],
+        "summary": "get content info",
+        "operationId": "getContentPreview",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "content",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "channel",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/channels/{channel}/guide": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get channel guide",
+        "operationId": "getChannelGuide",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "channel",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "Search Param to filter on",
+            "name": "search",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "$ref": "#/definitions/ChannelGuide"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/content": {
+      "get": {
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get existing content we have downloaded",
+        "operationId": "getContent",
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Content"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/folders": {
+      "get": {
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get existing content folders",
+        "operationId": "getContentFolders",
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/content/{content_name}": {
+      "delete": {
+        "summary": "delete a piece of content from library",
+        "operationId": "deleteContent",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "content_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "broke"
+          }
+        }
+      }
+    },
+    "/schedules": {
+      "get": {
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get our recording schedules",
+        "operationId": "getSchedules",
+        "responses": {
+          "200": {
+            "description": "woot!",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Schedule"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "summary": "get our recording schedules",
+        "operationId": "createSchedule",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Schedule"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          }
+        }
+      }
+    },
+    "/schedules/{schedule_name}": {
+      "delete": {
+        "summary": "delete a recording schedule",
+        "operationId": "deleteSchedule",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "schedule_name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "broke"
+          }
+        }
+      }
+    },
+    "/ui/{resource}": {
+      "get": {
+        "summary": "app redirect",
+        "operationId": "getUiContent",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "resource",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "woot!"
+          }
+        }
+      }
     }
   },
   "definitions": {
     "Channel": {
+      "type": "object",
+      "properties": {
+        "broadcastType": {
+          "type": "string"
+        },
+        "channelName": {
+          "type": "string"
+        }
+      }
+    },
+    "ChannelGuide": {
       "type": "object",
       "properties": {
         "channelName": {
@@ -180,6 +785,21 @@ func init() {
         }
       }
     },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "download_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "local_path": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "Guide": {
       "type": "object",
       "properties": {
@@ -194,9 +814,49 @@ func init() {
         "name": {
           "type": "string"
         }
-      },
-      "xml": {
-        "name": "Category"
+      }
+    },
+    "Schedule": {
+      "type": "object",
+      "properties": {
+        "appendDate": {
+          "type": "boolean"
+        },
+        "appendTime": {
+          "type": "boolean"
+        },
+        "filter": {
+          "type": "string"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "prependDate": {
+          "type": "boolean"
+        },
+        "prependTime": {
+          "type": "boolean"
+        },
+        "searches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "replace": {
+                "type": "string"
+              },
+              "search": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "watch": {
+          "type": "boolean"
+        }
       }
     }
   }

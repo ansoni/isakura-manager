@@ -22,7 +22,8 @@ http://swagger.io/terms/
     - application/json
 
     Produces:
-    - application/json
+    - application/json; charset=utf-8
+    - video/x-flv
 
 swagger:meta
 */

@@ -7,6 +7,7 @@ package operations
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -37,8 +38,44 @@ func NewIsakuraManagerAPI(spec *loads.Document) *IsakuraManagerAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		VideoXFlvProducer: runtime.ProducerFunc(func(w io.Writer, data interface{}) error {
+			return errors.NotImplemented("videoXFlv producer has not yet been implemented")
+		}),
+		CreateScheduleHandler: CreateScheduleHandlerFunc(func(params CreateScheduleParams) middleware.Responder {
+			return middleware.NotImplemented("operation CreateSchedule has not yet been implemented")
+		}),
+		DeleteContentHandler: DeleteContentHandlerFunc(func(params DeleteContentParams) middleware.Responder {
+			return middleware.NotImplemented("operation DeleteContent has not yet been implemented")
+		}),
+		DeleteScheduleHandler: DeleteScheduleHandlerFunc(func(params DeleteScheduleParams) middleware.Responder {
+			return middleware.NotImplemented("operation DeleteSchedule has not yet been implemented")
+		}),
+		GetChannelGuideHandler: GetChannelGuideHandlerFunc(func(params GetChannelGuideParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetChannelGuide has not yet been implemented")
+		}),
 		GetChannelsHandler: GetChannelsHandlerFunc(func(params GetChannelsParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetChannels has not yet been implemented")
+		}),
+		GetChannelsGuideHandler: GetChannelsGuideHandlerFunc(func(params GetChannelsGuideParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetChannelsGuide has not yet been implemented")
+		}),
+		GetContentHandler: GetContentHandlerFunc(func(params GetContentParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetContent has not yet been implemented")
+		}),
+		GetContentFoldersHandler: GetContentFoldersHandlerFunc(func(params GetContentFoldersParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetContentFolders has not yet been implemented")
+		}),
+		GetContentPreviewHandler: GetContentPreviewHandlerFunc(func(params GetContentPreviewParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetContentPreview has not yet been implemented")
+		}),
+		GetRootRedirectHandler: GetRootRedirectHandlerFunc(func(params GetRootRedirectParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetRootRedirect has not yet been implemented")
+		}),
+		GetSchedulesHandler: GetSchedulesHandlerFunc(func(params GetSchedulesParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetSchedules has not yet been implemented")
+		}),
+		GetUIContentHandler: GetUIContentHandlerFunc(func(params GetUIContentParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetUIContent has not yet been implemented")
 		}),
 	}
 }
@@ -68,11 +105,35 @@ type IsakuraManagerAPI struct {
 	// JSONConsumer registers a consumer for a "application/json" mime type
 	JSONConsumer runtime.Consumer
 
-	// JSONProducer registers a producer for a "application/json" mime type
+	// JSONProducer registers a producer for a "application/json; charset=utf-8" mime type
 	JSONProducer runtime.Producer
+	// VideoXFlvProducer registers a producer for a "video/x-flv" mime type
+	VideoXFlvProducer runtime.Producer
 
+	// CreateScheduleHandler sets the operation handler for the create schedule operation
+	CreateScheduleHandler CreateScheduleHandler
+	// DeleteContentHandler sets the operation handler for the delete content operation
+	DeleteContentHandler DeleteContentHandler
+	// DeleteScheduleHandler sets the operation handler for the delete schedule operation
+	DeleteScheduleHandler DeleteScheduleHandler
+	// GetChannelGuideHandler sets the operation handler for the get channel guide operation
+	GetChannelGuideHandler GetChannelGuideHandler
 	// GetChannelsHandler sets the operation handler for the get channels operation
 	GetChannelsHandler GetChannelsHandler
+	// GetChannelsGuideHandler sets the operation handler for the get channels guide operation
+	GetChannelsGuideHandler GetChannelsGuideHandler
+	// GetContentHandler sets the operation handler for the get content operation
+	GetContentHandler GetContentHandler
+	// GetContentFoldersHandler sets the operation handler for the get content folders operation
+	GetContentFoldersHandler GetContentFoldersHandler
+	// GetContentPreviewHandler sets the operation handler for the get content preview operation
+	GetContentPreviewHandler GetContentPreviewHandler
+	// GetRootRedirectHandler sets the operation handler for the get root redirect operation
+	GetRootRedirectHandler GetRootRedirectHandler
+	// GetSchedulesHandler sets the operation handler for the get schedules operation
+	GetSchedulesHandler GetSchedulesHandler
+	// GetUIContentHandler sets the operation handler for the get Ui content operation
+	GetUIContentHandler GetUIContentHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -136,8 +197,56 @@ func (o *IsakuraManagerAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.VideoXFlvProducer == nil {
+		unregistered = append(unregistered, "VideoXFlvProducer")
+	}
+
+	if o.CreateScheduleHandler == nil {
+		unregistered = append(unregistered, "CreateScheduleHandler")
+	}
+
+	if o.DeleteContentHandler == nil {
+		unregistered = append(unregistered, "DeleteContentHandler")
+	}
+
+	if o.DeleteScheduleHandler == nil {
+		unregistered = append(unregistered, "DeleteScheduleHandler")
+	}
+
+	if o.GetChannelGuideHandler == nil {
+		unregistered = append(unregistered, "GetChannelGuideHandler")
+	}
+
 	if o.GetChannelsHandler == nil {
 		unregistered = append(unregistered, "GetChannelsHandler")
+	}
+
+	if o.GetChannelsGuideHandler == nil {
+		unregistered = append(unregistered, "GetChannelsGuideHandler")
+	}
+
+	if o.GetContentHandler == nil {
+		unregistered = append(unregistered, "GetContentHandler")
+	}
+
+	if o.GetContentFoldersHandler == nil {
+		unregistered = append(unregistered, "GetContentFoldersHandler")
+	}
+
+	if o.GetContentPreviewHandler == nil {
+		unregistered = append(unregistered, "GetContentPreviewHandler")
+	}
+
+	if o.GetRootRedirectHandler == nil {
+		unregistered = append(unregistered, "GetRootRedirectHandler")
+	}
+
+	if o.GetSchedulesHandler == nil {
+		unregistered = append(unregistered, "GetSchedulesHandler")
+	}
+
+	if o.GetUIContentHandler == nil {
+		unregistered = append(unregistered, "GetUIContentHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -196,6 +305,9 @@ func (o *IsakuraManagerAPI) ProducersFor(mediaTypes []string) map[string]runtime
 		case "application/json":
 			result["application/json"] = o.JSONProducer
 
+		case "video/x-flv":
+			result["video/x-flv"] = o.VideoXFlvProducer
+
 		}
 
 		if p, ok := o.customProducers[mt]; ok {
@@ -238,10 +350,65 @@ func (o *IsakuraManagerAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/schedules"] = NewCreateSchedule(o.context, o.CreateScheduleHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/content/{content_name}"] = NewDeleteContent(o.context, o.DeleteContentHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/schedules/{schedule_name}"] = NewDeleteSchedule(o.context, o.DeleteScheduleHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/channel"] = NewGetChannels(o.context, o.GetChannelsHandler)
+	o.handlers["GET"]["/channels/{channel}/guide"] = NewGetChannelGuide(o.context, o.GetChannelGuideHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/channels"] = NewGetChannels(o.context, o.GetChannelsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/channels/guide"] = NewGetChannelsGuide(o.context, o.GetChannelsGuideHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/content"] = NewGetContent(o.context, o.GetContentHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/content/folders"] = NewGetContentFolders(o.context, o.GetContentFoldersHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/channels/{channel}/content/{content}/preview"] = NewGetContentPreview(o.context, o.GetContentPreviewHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"][""] = NewGetRootRedirect(o.context, o.GetRootRedirectHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/schedules"] = NewGetSchedules(o.context, o.GetSchedulesHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/ui/{resource}"] = NewGetUIContent(o.context, o.GetUIContentHandler)
 
 }
 

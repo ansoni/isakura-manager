@@ -13,7 +13,26 @@ schemes:
 - "https"
 - "http"
 paths:
-  /channel:
+  /:
+    get:
+      summary: "app redirect"
+      operationId: "getRootRedirect"
+      responses:
+        301:
+          description: woot!
+  /ui/{resource}:
+    get:
+      summary: "app redirect"
+      operationId: "getUiContent"
+      parameters:
+      - in: "path"
+        name: "resource"
+        type: string
+        required: true
+      responses:
+        200:
+          description: woot!
+  /channels/:
     get:
       summary: "get all channels"
       description: ""
@@ -21,7 +40,7 @@ paths:
       consumes:
       - "application/json"
       produces:
-      - "application/json"
+      - "application/json; charset=utf-8"
       parameters:
       - in: "query"
         name: "search"
@@ -34,8 +53,213 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Channel"
+  /channels/guide:
+    get:
+      summary: "get channel guide"
+      description: ""
+      operationId: "getChannelsGuide"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json; charset=utf-8"
+      parameters:
+      - in: "query"
+        name: "search"
+        description: "Search Param to filter on"
+        type: string
+      responses:
+        200:
+          description: woot!
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ChannelGuide"
+  /channels/{channel}/content/{content}/preview:
+    get:
+      summary: "get content info"
+      description: ""
+      operationId: "getContentPreview"
+      produces:
+      - "video/x-flv"
+      parameters:
+      - in: "path"
+        name: "content"
+        type: string
+        required: true
+      - in: "path"
+        name: "channel"
+        type: string
+        required: true
+      responses:
+        200:
+          description: woot!
+        404:
+          description: Not Found
+  /content/{content_name}:
+    delete:
+      summary: "delete a piece of content from library"
+      description: ""
+      operationId: "deleteContent"
+      parameters:
+      - in: "path"
+        name: "content_name"
+        type: string
+        required: true
+      responses:
+        200:
+          description: woot!
+        404:
+          description: not found
+        500:
+          description: broke
+  /content:
+    get:
+      summary: "get existing content we have downloaded"
+      description: ""
+      operationId: "getContent"
+      produces:
+      - "application/json; charset=utf-8"
+      responses:
+        200:
+          description: woot!
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Content"
+  /content/folders:
+    get:
+      summary: "get existing content folders"
+      description: ""
+      operationId: "getContentFolders"
+      produces:
+      - "application/json; charset=utf-8"
+      responses:
+        200:
+          description: woot!
+          schema:
+            type: "array"
+            items:
+              type: string
+  /schedules/{schedule_name}:
+    delete:
+      summary: "delete a recording schedule"
+      description: ""
+      operationId: "deleteSchedule"
+      parameters:
+      - in: "path"
+        name: "schedule_name"
+        type: string
+        required: true
+      responses:
+        200:
+          description: woot!
+        404:
+          description: not found
+        500:
+          description: broke
+  /schedules:
+    get:
+      summary: "get our recording schedules"
+      description: ""
+      operationId: "getSchedules"
+      produces:
+      - "application/json; charset=utf-8"
+      responses:
+        200:
+          description: woot!
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Schedule"
+    post:
+      summary: "get our recording schedules"
+      description: ""
+      operationId: "createSchedule"
+      parameters:
+      - in: "body"
+        name: "body"
+        schema: 
+          $ref: "#/definitions/Schedule"
+        required: true
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json; charset=utf-8"
+      responses:
+        200:
+          description: woot!
+  /channels/{channel}/guide:
+    get:
+      summary: "get channel guide"
+      description: ""
+      operationId: "getChannelGuide"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json; charset=utf-8"
+      parameters:
+      - in: "path"
+        name: "channel"
+        type: string
+        required: true
+      - in: "query"
+        name: "search"
+        description: "Search Param to filter on"
+        type: string
+      responses:
+        200:
+          description: woot!
+          schema: 
+            $ref: "#/definitions/ChannelGuide"
+        404:
+          description: Not Found
 definitions:
+  Content:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      local_path:
+        type: "string"
+      download_date:
+        type: "string"
+        format: "date-time"
+  Schedule:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      folder:
+        type: "string"
+      filter:
+        type: "string"
+      prependDate:
+        type: "boolean"
+      prependTime:
+        type: "boolean"
+      appendDate:
+        type: "boolean"
+      appendTime:
+        type: "boolean"
+      searches:
+        type: "array"
+        items:
+          type: object
+          properties:
+            search:
+              type: string
+            replace:
+              type: string
+      watch:
+        type: "boolean"
   Channel:
+    type: "object"
+    properties:
+      channelName:
+        type: "string"
+      broadcastType:
+        type: "string"
+  ChannelGuide:
     type: "object"
     properties:
       id:
@@ -58,5 +282,3 @@ definitions:
       airdate:
         type: "string"
         format: "date-time"
-    xml:
-      name: "Category"
