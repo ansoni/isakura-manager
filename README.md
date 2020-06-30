@@ -2,11 +2,12 @@
 
 Download videos from isakura
 
-go get github.com/rakyll/statik
-go generate
-go build
+go get github.com/rakyll/statik  
+go generate  
+bash ./build_ui.sh  
+go build  
 
-./isakura-manager -h
+./isakura-manager -h  
 
-open up web browser to 127.0.0.1:8080
+open up web browser to 127.0.0.1:8080  
 
