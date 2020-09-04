@@ -21,7 +21,7 @@
     "vue": "2.6.10",
     "vue-hot-reload-api": "^2.3.4",
     "vue-material": "^1.0.0-beta-11",
-    "vue-moment": "^4.0.0",
+    "vue-moment": "^4.1.0",
     "vue-video-player": "^5.0.2"
   },
   "devDependencies": {
